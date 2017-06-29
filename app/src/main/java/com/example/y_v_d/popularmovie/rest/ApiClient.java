@@ -3,9 +3,6 @@ package com.example.y_v_d.popularmovie.rest;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by Y-V-D on 2017-06-28.
- */
 
 public class ApiClient {
 

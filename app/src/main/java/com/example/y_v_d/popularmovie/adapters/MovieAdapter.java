@@ -23,7 +23,7 @@ import java.util.List;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder> {
-    private List<Movie> movies;
+    private ArrayList<Movie> movies;
     private int mLayoutItem;
     private Context mContext;
     public static final String ARG_MOVIE = "ARG_MOVIE";
@@ -77,9 +77,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MyViewHolder
             mTitle = (TextView) itemView.findViewById(R.id.title);
         }
     }
-    public MovieAdapter(List<Movie> movies, int mLayoutItem, Context mContext) {
+    public MovieAdapter(ArrayList<Movie> movies, int mLayoutItem, Context mContext) {
         this.movies = movies;
         this.mLayoutItem = mLayoutItem;
         this.mContext = mContext;
+    }
+
+    public ArrayList<Movie> getMovies() {
+        return movies;
     }
 }

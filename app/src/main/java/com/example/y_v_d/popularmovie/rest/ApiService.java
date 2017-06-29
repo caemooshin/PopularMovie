@@ -18,4 +18,8 @@ public interface ApiService {
     @GET("movie/popular")
     Call<MoviesResult> getPopularMovies(@Query("api_key") String apiKey);
 
+    @GET("movie/{sort_by}")
+    Call<MoviesResult> getMovies(@Path("sort_by") String sortBy, @Query("api_key") String apiKey);
+
+
 }
