@@ -29,14 +29,15 @@ import retrofit2.Response;
 
 public class MovieActivity extends AppCompatActivity {
 
-    private final static String API_KEY = "API_KEY";
-    public final static String MOST_POPULAR = "popular";
-    public final static String TOP_RATED = "top_rated";
+    private final static String API_KEY = "";
+    private final static String MOST_POPULAR = "popular";
+    private final static String TOP_RATED = "top_rated";
 
     private String mSortBy = MOST_POPULAR;
 
     private RecyclerView rvListmovie;
     private MovieAdapter mMovieAdapter;
+    ArrayList<Movie> movies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +53,30 @@ public class MovieActivity extends AppCompatActivity {
         rvListmovie = (RecyclerView) findViewById(R.id.list_movie);
         rvListmovie.setLayoutManager(new GridLayoutManager(this, 2));
 
+        if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            fetchMovie(mSortBy);
+        }
+        else {
+            movies = savedInstanceState.getParcelableArrayList("movies");
+            mMovieAdapter = new MovieAdapter(movies, R.layout.movie_item, getApplicationContext());
+            rvListmovie.setAdapter(mMovieAdapter);
+            mSortBy = savedInstanceState.getString("EXTRA_SORT_BY");
+        }
+
+    }
+
+    private void fetchMovie(String sortBy){
+
         ApiService apiService =
                 ApiClient.getClient().create(ApiService.class);
 
-        Call<MoviesResult> call = apiService.getPopularMovies(API_KEY);
+        Call<MoviesResult> call = apiService.getMovies(sortBy, API_KEY);
         call.enqueue(new Callback<MoviesResult>() {
             @Override
             public void onResponse(Call<MoviesResult> call, Response<MoviesResult> response) {
-                List<Movie> movies = response.body().getResults();
-                rvListmovie.setAdapter(new MovieAdapter(movies, R.layout.movie_item, getApplicationContext()));
-
+                movies = response.body().getResults();
+                mMovieAdapter = new MovieAdapter(movies, R.layout.movie_item, getApplicationContext());
+                rvListmovie.setAdapter(mMovieAdapter);
             }
 
             @Override
@@ -69,7 +84,17 @@ public class MovieActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        ArrayList<Movie> movies = mMovieAdapter.getMovies();
+        if (movies != null && !movies.isEmpty()) {
+            outState.putParcelableArrayList("movies", movies);
+        }
+        outState.putString("EXTRA_SORT_BY", mSortBy);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -94,33 +119,13 @@ public class MovieActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.sort_by_top_rated:
-
                 mSortBy = TOP_RATED;
+                fetchMovie(mSortBy);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_most_popular:
                 mSortBy = MOST_POPULAR;
-                rvListmovie = (RecyclerView) findViewById(R.id.list_movie);
-                rvListmovie.setLayoutManager(new GridLayoutManager(this, 2));
-
-                ApiService apiService =
-                        ApiClient.getClient().create(ApiService.class);
-
-                Call<MoviesResult> call = apiService.getTopRatedMovies(API_KEY);
-                call.enqueue(new Callback<MoviesResult>() {
-                    @Override
-                    public void onResponse(Call<MoviesResult> call, Response<MoviesResult> response) {
-                        List<Movie> movies = response.body().getResults();
-                        rvListmovie.setAdapter(new MovieAdapter(movies, R.layout.movie_item, getApplicationContext()));
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<MoviesResult> call, Throwable t) {
-
-                    }
-                });
-
+                fetchMovie(mSortBy);
                 item.setChecked(true);
             default:
                 break;
