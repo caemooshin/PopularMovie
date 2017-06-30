@@ -1,5 +1,6 @@
 package com.example.y_v_d.popularmovie;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +17,6 @@ import android.widget.Toast;
 
 import com.example.y_v_d.popularmovie.adapters.MovieAdapter;
 import com.example.y_v_d.popularmovie.models.Movie;
-import com.example.y_v_d.popularmovie.models.MovieService;
 import com.example.y_v_d.popularmovie.models.MoviesResult;
 import com.example.y_v_d.popularmovie.rest.ApiClient;
 import com.example.y_v_d.popularmovie.rest.ApiService;
@@ -51,7 +52,8 @@ public class MovieActivity extends AppCompatActivity {
             return;
         }
         rvListmovie = (RecyclerView) findViewById(R.id.list_movie);
-        rvListmovie.setLayoutManager(new GridLayoutManager(this, 2));
+        //rvListmovie.setLayoutManager(new GridLayoutManager(this, 2));
+        rvListmovie.setLayoutManager(new GridLayoutManager(this, calculateNoOfColumns(this)));
 
         if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
             fetchMovie(mSortBy);
@@ -63,6 +65,14 @@ public class MovieActivity extends AppCompatActivity {
             mSortBy = savedInstanceState.getString("EXTRA_SORT_BY");
         }
 
+    }
+
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 180;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        return noOfColumns;
     }
 
     private void fetchMovie(String sortBy){
