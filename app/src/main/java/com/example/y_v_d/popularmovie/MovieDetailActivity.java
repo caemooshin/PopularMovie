@@ -33,6 +33,21 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Movie movie = getIntent().getParcelableExtra(ARG_MOVIE);
 
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(movie.getTitle());
+        }
+
+        ImageView movieBackdrop = ((ImageView) findViewById(R.id.movie_backdrop));
+        if (movieBackdrop != null) {
+            Picasso.with(this)
+                    .load(movie.getBackdrop())
+                    .config(Bitmap.Config.RGB_565)
+                    .into(movieBackdrop);
+        }
+
+
+
         movieTitle = (TextView) findViewById(R.id.title);
         release_date = (TextView) findViewById(R.id.release_date);
         movieDescription = (TextView) findViewById(R.id.overview);
