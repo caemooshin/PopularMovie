@@ -1,6 +1,7 @@
 package com.example.y_v_d.popularmovie;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -63,6 +64,9 @@ public class MovieActivity extends AppCompatActivity {
             mMovieAdapter = new MovieAdapter(movies, R.layout.movie_item, getApplicationContext());
             rvListmovie.setAdapter(mMovieAdapter);
             mSortBy = savedInstanceState.getString("EXTRA_SORT_BY");
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            String defaultValue = getResources().getString(R.string.preference_sortby_key);
+            mSortBy = sharedPref.getString(getString(R.string.preference_sortby_key), defaultValue);
         }
 
     }
@@ -127,14 +131,19 @@ public class MovieActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
         switch (item.getItemId()) {
             case R.id.sort_by_top_rated:
                 mSortBy = TOP_RATED;
+                editor.putString(getString(R.string.preference_sortby_key), mSortBy);
                 fetchMovie(mSortBy);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_most_popular:
                 mSortBy = MOST_POPULAR;
+                editor.putString(getString(R.string.preference_sortby_key), mSortBy);
                 fetchMovie(mSortBy);
                 item.setChecked(true);
             default:
