@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.y_v_d.popularmovie.adapters.MovieAdapter;
 import com.example.y_v_d.popularmovie.models.Movie;
-import com.example.y_v_d.popularmovie.models.MovieService;
 import com.example.y_v_d.popularmovie.models.MoviesResult;
 import com.example.y_v_d.popularmovie.rest.ApiClient;
 import com.example.y_v_d.popularmovie.rest.ApiService;
