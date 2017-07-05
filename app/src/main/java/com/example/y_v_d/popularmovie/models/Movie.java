@@ -99,7 +99,7 @@ public class Movie implements Parcelable{
     }
 
     public String getBackdrop() {
-        return mBackdrop;
+        return "https://image.tmdb.org/t/p/w500" + mBackdrop;
     }
 
     public String getPosterPath() {
