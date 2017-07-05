@@ -1,7 +1,7 @@
 package com.example.y_v_d.popularmovie;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Context; 
+import android.content.SharedPreferences; 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,7 +53,8 @@ public class MovieActivity extends AppCompatActivity {
             return;
         }
         rvListmovie = (RecyclerView) findViewById(R.id.list_movie);
-        rvListmovie.setLayoutManager(new GridLayoutManager(this, 2));
+        //rvListmovie.setLayoutManager(new GridLayoutManager(this, 2));
+        rvListmovie.setLayoutManager(new GridLayoutManager(this, calculateNoOfColumns(this)));
 
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         String defaultValue = getResources().getString(R.string.preference_sortby_key_default);
@@ -68,6 +70,14 @@ public class MovieActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 180;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        return noOfColumns;
     }
 
     private void fetchMovie(String sortBy){
