@@ -1,7 +1,9 @@
 package com.example.y_v_d.popularmovie;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -11,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.y_v_d.popularmovie.data.MovieContract;
 import com.example.y_v_d.popularmovie.models.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -86,5 +90,29 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    // add to favorite
+    public void onClickAddMovie(View view) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+                movie.getId());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE,
+                movie.getTitle());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH,
+                movie.getPoster());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW,
+                movie.getOverview());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE,
+                movie.getUserRating());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE,
+                movie.getReleaseDate());
+        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH,
+                movie.getBackdrop());
+        getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,
+                contentValues);
+
+
+
     }
 }
