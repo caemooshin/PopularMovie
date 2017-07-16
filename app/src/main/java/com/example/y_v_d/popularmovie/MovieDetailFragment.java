@@ -73,6 +73,7 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
         mReleaseDate.setText(movie.getReleaseDate());
         mRating.setText("Rating : " + movie.getUserRating().toString());
         mDesc.setText(movie.getOverview());
+        mID = movie.getId();
 
         return rootView;
     }
@@ -128,10 +129,12 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
                     String  Rating = movie.getUserRating().toString();
                     String  Desc = movie.getOverview();
                     String  Backdrop = movie.getBackdrop();
+                    mID = movie.getId();
 
                     ContentValues contentValues = new ContentValues();
                     // Put the task description and selected mPriority into the ContentValues
                     contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, Desc);
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mID);
                     contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, Title);
                     contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH, Poster);
                     contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH, Backdrop);
@@ -143,36 +146,32 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
                     if (uri != null) {
                         Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_LONG).show();
                     }
-                     getActivity().finish();
                 }
 
                 break;
             case R.id.button_mark_as_unfavorite:
-/*
-                if (isFavorite()) {
-                    mID = movie.getId();
-                    String stringId = Long.toString(mID);
-             /*getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-                     MovieContract.MovieEntry._ID + " = " + mID, null);*/
- /*
-                    Uri uri = MovieContract.MovieEntry.CONTENT_URI;
-                    uri = uri.buildUpon().appendPath(stringId).build();
 
-                    // COMPLETED (2) Delete a single row of data using a ContentResolver
-                    getContext().getContentResolver().delete(uri, null, null);
+                if (isFavorite()) {
+
+                       mID = movie.getId();
+                    String stringId = Long.toString(mID);
+
+                    getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mID, null);
+
+
+                    Toast.makeText(getContext(), "yes", Toast.LENGTH_LONG).show();
                 }
-                getActivity().finish(); */
-                Toast.makeText(getContext(), "del", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "no", Toast.LENGTH_LONG).show();
                 break;
         }
     }
 
     private boolean isFavorite() {
-        mID = movie.getId();
         Cursor movieCursor = getContext().getContentResolver().query(
                 MovieContract.MovieEntry.CONTENT_URI,
-                new String[]{MovieContract.MovieEntry._ID},
-                MovieContract.MovieEntry._ID + " = " + mID,
+                new String[]{MovieContract.MovieEntry.COLUMN_MOVIE_ID},
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mID,
                 null,
                 null);
 
