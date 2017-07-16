@@ -9,11 +9,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import static com.example.y_v_d.popularmovie.data.MovieContract.MovieEntry.TABLE_NAME;
 
 public class MovieProvider extends ContentProvider {
     public static final int TASKS = 300;
+    public static final int TASK_WITH_ID = 301;
 
     // CDeclare a static variable for the Uri matcher that you construct
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -22,7 +24,7 @@ public class MovieProvider extends ContentProvider {
 
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIE, TASKS);
-
+        uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIE + "/#", TASK_WITH_ID);
         return uriMatcher;
     }
 
@@ -37,7 +39,7 @@ public class MovieProvider extends ContentProvider {
 
     // Implement insert to handle requests to insert a single new row of data
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
@@ -97,7 +99,26 @@ public class MovieProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+
+        int match = sUriMatcher.match(uri);
+        int tasksDeleted; // starts as 0
+
+        switch (match) {
+            case TASK_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                tasksDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (tasksDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return tasksDeleted;
+
     }
 
     @Override
