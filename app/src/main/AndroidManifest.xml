@@ -22,6 +22,10 @@
         <activity
             android:name=".MovieDetailActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <provider
+            android:name="com.example.y_v_d.popularmovie.data.MovieProvider"
+            android:authorities="com.example.y_v_d.popularmovie"
+            android:exported="false"/>
     </application>
 
 </manifest>
