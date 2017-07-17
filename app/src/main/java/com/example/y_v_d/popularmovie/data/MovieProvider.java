@@ -105,10 +105,15 @@ public class MovieProvider extends ContentProvider {
         int tasksDeleted; // starts as 0
 
         switch (match) {
+            case TASKS:
+                String mid = uri.getPathSegments().get(1);
+                tasksDeleted = db.delete(TABLE_NAME, "movie_id=?", new String[]{mid});
+                break;
             case TASK_WITH_ID:
                 String id = uri.getPathSegments().get(1);
-                tasksDeleted = db.delete(TABLE_NAME, "COLUMN_MOVIE_ID=?", new String[]{id});
+                tasksDeleted = db.delete(TABLE_NAME, "movie_id=?", new String[]{id});
                 break;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

@@ -156,8 +156,11 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
                        mID = movie.getId();
                     String stringId = Long.toString(mID);
 
-                    getActivity().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-                            MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + mID, null);
+                    Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+                    uri = uri.buildUpon().appendPath(stringId).build();
+
+                    // COMPLETED (2) Delete a single row of data using a ContentResolver
+                    getActivity().getContentResolver().delete(uri, null, null);
 
 
                     Toast.makeText(getContext(), "yes", Toast.LENGTH_LONG).show();
