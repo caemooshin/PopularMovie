@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
     Button unfavorite;
     ImageView mBackdrop;
     long mID;
+    boolean Star = false;
 
     public MovieDetailFragment() {
     }
@@ -96,6 +99,71 @@ public class MovieDetailFragment extends Fragment implements View.OnClickListene
                     .config(Bitmap.Config.RGB_565)
                     .into(mBackdrop);
         }
+
+        final FloatingActionButton fab = (FloatingActionButton) activity.findViewById(R.id.fab);
+        if (isFavorite()) {
+            fab.setImageResource(R.drawable.ic_star_black_24dp);
+            Star = true;
+        }else{
+            fab.setImageResource(R.drawable.ic_star_border_black_24dp);
+            Star = false;
+        }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(Star == true){//remove from DB
+                    fab.setImageResource(R.drawable.ic_star_border_black_24dp);
+                    Star = false;
+                    if (isFavorite()) {
+
+                        mID = movie.getId();
+                        String stringId = Long.toString(mID);
+
+                        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+                        uri = uri.buildUpon().appendPath(stringId).build();
+
+                        // COMPLETED (2) Delete a single row of data using a ContentResolver
+                        getActivity().getContentResolver().delete(uri, null, null);
+                         Toast.makeText(getContext(), "yes", Toast.LENGTH_LONG).show();
+                    }
+                    Toast.makeText(getContext(), "no", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    fab.setImageResource(R.drawable.ic_star_black_24dp);
+                    Star = true;
+                    if (!isFavorite()) {
+
+                        String Poster = movie.getPosterPath();
+                        String Title = movie.getTitle();
+                        String  ReleaseDate = movie.getReleaseDate();
+                        String  Rating = movie.getUserRating().toString();
+                        String  Desc = movie.getOverview();
+                        String  Backdrop = movie.getBackdrop();
+                        mID = movie.getId();
+
+                        ContentValues contentValues = new ContentValues();
+                        // Put the task description and selected mPriority into the ContentValues
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, Desc);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, mID);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, Title);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH, Poster);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH, Backdrop);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE, Rating);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, ReleaseDate);
+                        // Insert the content values via a ContentResolver
+                        Uri uri = getActivity().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+                        if (uri != null) {
+                            Toast.makeText(getContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+
+
+            }
+        });
 
     }
 
