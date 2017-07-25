@@ -21,6 +21,7 @@ import com.example.y_v_d.popularmovie.models.Movie;
 import com.example.y_v_d.popularmovie.models.MoviesResult;
 import com.example.y_v_d.popularmovie.rest.ApiClient;
 import com.example.y_v_d.popularmovie.rest.ApiService;
+import com.facebook.stetho.Stetho;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,15 @@ public class MovieActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(
+                                Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(
+                                Stetho.defaultInspectorModulesProvider(this))
+
+                        .build());
 
         if (API_KEY.isEmpty()) {
             Toast.makeText(getApplicationContext(), "Please obtain your API KEY first from themoviedb.org", Toast.LENGTH_LONG).show();
