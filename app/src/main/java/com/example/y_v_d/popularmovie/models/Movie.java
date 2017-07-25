@@ -105,4 +105,32 @@ public class Movie implements Parcelable{
     public String getPosterPath() {
         return "https://image.tmdb.org/t/p/w500" + mPoster;
     }
+
+    public void setmId(long mId) {
+        this.mId = mId;
+    }
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public void setmPoster(String mPoster) {
+        this.mPoster = mPoster;
+    }
+
+    public void setmOverview(String mOverview) {
+        this.mOverview = mOverview;
+    }
+
+    public void setmUserRating(String mUserRating) {
+        this.mUserRating = mUserRating;
+    }
+
+    public void setmReleaseDate(String mReleaseDate) {
+        this.mReleaseDate = mReleaseDate;
+    }
+
+    public void setmBackdrop(String mBackdrop) {
+        this.mBackdrop = mBackdrop;
+    }
 }
